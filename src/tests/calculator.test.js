@@ -4,6 +4,9 @@ const {
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  squareRoot,
   parseNumber,
   getOperation,
   calculate,
@@ -37,6 +40,34 @@ describe("calculator arithmetic functions", () => {
   test("throws on division by zero", () => {
     expect(() => divide(8, 0)).toThrow("Division by zero is not allowed.");
   });
+
+  test("calculates modulo", () => {
+    expect(modulo(5, 2)).toBe(1);
+    expect(modulo(10, 3)).toBe(1);
+    expect(modulo(-5, 2)).toBe(-1);
+  });
+
+  test("throws on modulo by zero", () => {
+    expect(() => modulo(8, 0)).toThrow("Modulo by zero is not allowed.");
+  });
+
+  test("calculates powers", () => {
+    expect(power(2, 3)).toBe(8);
+    expect(power(9, 0.5)).toBe(3);
+    expect(power(4, 0)).toBe(1);
+  });
+
+  test("calculates square roots", () => {
+    expect(squareRoot(16)).toBe(4);
+    expect(squareRoot(0)).toBe(0);
+    expect(squareRoot(2)).toBeCloseTo(1.41421356237);
+  });
+
+  test("throws on square root of a negative number", () => {
+    expect(() => squareRoot(-1)).toThrow(
+      "Square root of a negative number is not allowed."
+    );
+  });
 });
 
 describe("calculator helpers", () => {
@@ -55,10 +86,14 @@ describe("calculator helpers", () => {
     expect(getOperation("subtraction")).toBe(SUPPORTED_OPERATIONS.subtraction);
     expect(getOperation("x")).toBe(SUPPORTED_OPERATIONS.x);
     expect(getOperation("DIVIDE")).toBe(SUPPORTED_OPERATIONS.divide);
+    expect(getOperation("%")).toBe(SUPPORTED_OPERATIONS["%"]);
+    expect(getOperation("POWER")).toBe(SUPPORTED_OPERATIONS.power);
+    expect(getOperation("sqrt")).toBe(SUPPORTED_OPERATIONS.sqrt);
+    expect(getOperation("√")).toBe(SUPPORTED_OPERATIONS["√"]);
   });
 
   test("returns undefined for unsupported operations", () => {
-    expect(getOperation("mod")).toBeUndefined();
+    expect(getOperation("percent")).toBeUndefined();
   });
 });
 
@@ -98,10 +133,36 @@ describe("calculate", () => {
     expect(calculate("subtract", "8", "2").result).toBe(6);
     expect(calculate("multiply", "8", "2").result).toBe(16);
     expect(calculate("divide", "8", "2").result).toBe(4);
+    expect(calculate("modulo", "8", "3").result).toBe(2);
+    expect(calculate("power", "2", "4").result).toBe(16);
+    expect(calculate("sqrt", "16").result).toBe(4);
+  });
+
+  test("supports the extended image examples", () => {
+    expect(calculate("%", "5", "2")).toEqual({
+      name: "modulo",
+      left: 5,
+      right: 2,
+      result: 1,
+    });
+
+    expect(calculate("^", "2", "3")).toEqual({
+      name: "power",
+      left: 2,
+      right: 3,
+      result: 8,
+    });
+
+    expect(calculate("√", "16")).toEqual({
+      name: "square root",
+      left: 16,
+      right: undefined,
+      result: 4,
+    });
   });
 
   test("throws for unsupported operations", () => {
-    expect(() => calculate("mod", "8", "2")).toThrow("Unsupported operation: mod");
+    expect(() => calculate("percent", "8", "2")).toThrow("Unsupported operation: percent");
   });
 
   test("throws for invalid operands", () => {
@@ -115,5 +176,15 @@ describe("calculate", () => {
 
   test("throws when division uses zero", () => {
     expect(() => calculate("divide", "8", "0")).toThrow("Division by zero is not allowed.");
+  });
+
+  test("throws when modulo uses zero", () => {
+    expect(() => calculate("mod", "8", "0")).toThrow("Modulo by zero is not allowed.");
+  });
+
+  test("throws when square root uses a negative number", () => {
+    expect(() => calculate("sqrt", "-16")).toThrow(
+      "Square root of a negative number is not allowed."
+    );
   });
 });

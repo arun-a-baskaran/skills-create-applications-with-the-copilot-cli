@@ -20,11 +20,14 @@ Supported operations:
 - subtraction
 - multiplication
 - division
+- modulo
+- power
+- square root
 
 Run it with:
 
 ```bash
-node src/calculator.js <operation> <left> <right>
+node src/calculator.js <operation> <left> [right]
 ```
 
 Examples:
@@ -34,6 +37,9 @@ node src/calculator.js add 7 3
 node src/calculator.js subtract 10 4
 node src/calculator.js multiply 6 5
 node src/calculator.js divide 8 2
+node src/calculator.js modulo 5 2
+node src/calculator.js power 2 3
+node src/calculator.js sqrt 16
 ```
 
 Run the unit tests with:
